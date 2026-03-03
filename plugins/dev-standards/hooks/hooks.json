@@ -51,6 +51,17 @@
         ]
       }
     ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Analyze the user's request. Classify it:\n\nIMPLEMENTATION TASK — involves creating or modifying business logic:\n- Services, helpers, utilities, validators, algorithms, handlers, controllers\n- Route handlers, middleware with logic, computation modules\n- Bug fixes in logic-bearing code\n- Any file containing business logic, data transformations, or algorithmic decisions\n\nNON-IMPLEMENTATION TASK — everything else:\n- Config changes, documentation, UI components, styling, types/interfaces\n- Questions, research, exploration, code review, refactoring with no logic change\n- CI/CD, deployment, dependency updates, migrations\n- Plugin/hook/skill development\n\nIf IMPLEMENTATION TASK, return:\n{\"decision\": \"approve\", \"message\": \"TDD workflow activated. For each implementation file:\\n1. RED — Write or update the test file FIRST. Run tests — they must FAIL.\\n2. GREEN — Write minimum implementation to pass. Run tests — they must PASS.\\n3. REFACTOR — Clean up if needed, tests still pass.\\n\\nDetect test conventions from the project (runner, location, naming) before writing tests. Never write implementation before its test.\"}\n\nIf NON-IMPLEMENTATION TASK, return:\n{\"decision\": \"approve\"}",
+            "statusMessage": "Checking if TDD workflow applies..."
+          }
+        ]
+      }
+    ],
     "SubagentStop": [
       {
         "hooks": [
