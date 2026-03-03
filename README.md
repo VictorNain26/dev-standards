@@ -7,7 +7,16 @@ Claude Code plugin that enforces universal development standards. Git safety, se
 ## Install
 
 ```bash
-claude plugin add /path/to/dev-standards
+# 1. Add the marketplace
+/plugin marketplace add VictorNain26/dev-standards
+
+# 2. Install the plugin
+/plugin install dev-standards@victornain26-plugins
+```
+
+For local development:
+```bash
+claude --plugin-dir /path/to/dev-standards
 ```
 
 ## What's included

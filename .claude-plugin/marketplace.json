@@ -1,0 +1,25 @@
+{
+  "name": "victornain26-plugins",
+  "owner": {
+    "name": "VictorNain26",
+    "email": "victor.lenain26@gmail.com"
+  },
+  "metadata": {
+    "description": "Claude Code plugins by VictorNain26"
+  },
+  "plugins": [
+    {
+      "name": "dev-standards",
+      "source": ".",
+      "description": "Universal development standards — git safety, secret protection, TDD enforcement, dev workflow, code review. Zero config, language-agnostic.",
+      "version": "1.1.0",
+      "author": {
+        "name": "VictorNain26"
+      },
+      "homepage": "https://github.com/VictorNain26/dev-standards",
+      "repository": "https://github.com/VictorNain26/dev-standards",
+      "license": "MIT",
+      "keywords": ["tdd", "security", "git-safety", "code-review", "enforcement"]
+    }
+  ]
+}
