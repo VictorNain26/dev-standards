@@ -39,6 +39,18 @@
         ]
       }
     ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Context was compacted. Re-inject critical rules:\n\n1. TDD ENFORCEMENT: All business logic (services, helpers, validators, handlers) must have corresponding test files. Follow Red-Green-Refactor.\n2. GIT SAFETY: Never use git add . / -A / --all. Stage files explicitly. Never use --no-verify.\n3. SECRET PROTECTION: Never modify .env files (except .env.example). Never commit secrets.\n4. COMMIT: Use conventional commits. Verify no secrets are staged before committing.\n\nReturn {\"decision\": \"approve\"} to continue.",
+            "statusMessage": "Re-injecting dev standards after compaction..."
+          }
+        ]
+      }
+    ],
     "SubagentStop": [
       {
         "hooks": [

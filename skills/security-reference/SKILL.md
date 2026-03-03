@@ -1,6 +1,6 @@
 ---
 name: security-reference
-description: Security rules for git operations, secret handling, and secure coding. Auto-loaded when working with git, environment files, or sensitive data.
+description: Security rules for git and secret handling. Use when committing code, modifying .env files, or handling credentials.
 user-invocable: false
 ---
 

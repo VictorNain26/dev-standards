@@ -1,6 +1,6 @@
 ---
 name: tdd-reference
-description: TDD rules and guidelines. Auto-loaded when working on business logic code — services, helpers, validators, algorithms, handlers.
+description: TDD workflow reference (Red-Green-Refactor). Use when writing or modifying services, helpers, validators, handlers, or test files.
 user-invocable: false
 ---
 
