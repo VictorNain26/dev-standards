@@ -1,5 +1,7 @@
 ---
+name: tdd
 description: Implement a feature or fix using strict Test-Driven Development
+argument-hint: "[task description]"
 ---
 
 Implement the following using TDD: $ARGUMENTS

@@ -1,5 +1,7 @@
 ---
+name: dev
 description: Develop a feature or fix with best practices enforcement
+argument-hint: "[task description]"
 ---
 
 Implement the following task: $ARGUMENTS
@@ -21,7 +23,7 @@ Follow this workflow:
    - GREEN: write minimum code to pass
    - REFACTOR: clean up, tests still pass
 
-4. **Implement** — follow existing patterns. TypeScript strict (no `any`). Max 400 lines per file. No over-engineering.
+4. **Implement** — follow existing patterns. Strict typing (no `any` in TS, proper types elsewhere). Keep files focused, split above ~400 lines. No over-engineering.
 
 5. **Validate** — run the project's detected validation commands:
    - Type checking (if available)

@@ -1,4 +1,5 @@
 ---
+name: review
 description: Review current branch changes for production readiness
 ---
 
@@ -12,7 +13,7 @@ Review the current branch for production readiness.
 
 2. **Check each category:**
 
-   - **Type safety** — no `any` (TypeScript), no untyped parameters, no `@ts-ignore`, no unhandled `null`/`undefined`
+   - **Type safety** — no loose types (no `any`, no `@ts-ignore` or equivalents). Handle null/nil/undefined explicitly.
    - **Security** — no secrets committed, no `.env` files, no SQL injection vectors, no XSS, no command injection
    - **Error handling** — external calls have error handling, no swallowed exceptions, meaningful error messages
    - **Code quality** — files under 400 lines, no dead code, no premature abstractions, follows existing patterns

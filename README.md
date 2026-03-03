@@ -21,11 +21,12 @@ claude plugin add /path/to/dev-standards
 | No skip permissions | PreToolUse (Bash) | `--dangerously-skip-permissions` |
 | Secret protection | PreToolUse (Edit\|Write) | Modifying `.env.*` files (except `.env.example`) |
 | TDD gate | Stop (prompt) | Finishing without tests for implementation files |
+| TDD gate (subagent) | SubagentStop (prompt) | Same check applied to subagents |
 
-### Commands
+### Skills (user-invocable)
 
-| Command | Description |
-|---------|-------------|
+| Skill | Description |
+|-------|-------------|
 | `/dev` | Full dev workflow: scope, detect conventions, TDD if logic, implement, validate, commit |
 | `/tdd` | Strict TDD workflow: Red-Green-Refactor with auto-detection |
 | `/review` | Code review checklist: type safety, security, error handling, TDD compliance |
@@ -43,7 +44,7 @@ claude plugin add /path/to/dev-standards
 User asks to implement something
         |
         v
-/dev or /tdd command (optional — sets workflow)
+/dev or /tdd skill (optional — sets workflow)
         |
         v
 Agent writes code
@@ -51,7 +52,7 @@ Agent writes code
         v
    Hooks fire at every step:
    - PreToolUse: blocks unsafe git commands, secret edits
-   - Stop: checks TDD compliance before finishing
+   - Stop + SubagentStop: checks TDD compliance before finishing
         |
     +---+---+
     |       |
@@ -81,7 +82,7 @@ The TDD gate supports any language with standard test file patterns:
 
 ## Project-specific overrides
 
-Plugin commands (`/dev`, `/tdd`, `/review`) can be overridden by placing same-named files in your project's `.claude/commands/` directory. Project commands take precedence over plugin commands.
+Plugin skills (`/dev`, `/tdd`, `/review`) can be overridden by placing same-named files in your project's `.claude/commands/` or `.claude/skills/` directory. Project definitions take precedence over plugin ones.
 
 Plugin hooks always apply — they cannot be overridden per-project.
 

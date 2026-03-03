@@ -9,7 +9,5 @@
   "homepage": "https://github.com/VictorNain26/dev-standards",
   "repository": "https://github.com/VictorNain26/dev-standards",
   "license": "MIT",
-  "keywords": ["tdd", "security", "git-safety", "code-review", "enforcement", "dev-workflow"],
-  "commands": "./commands/",
-  "hooks": "./hooks/hooks.json"
+  "keywords": ["tdd", "security", "git-safety", "code-review", "enforcement", "dev-workflow"]
 }
