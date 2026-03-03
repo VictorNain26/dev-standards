@@ -1,0 +1,15 @@
+{
+  "name": "dev-standards",
+  "version": "1.0.0",
+  "description": "Universal development standards for AI agents. Git safety hooks, secret protection, TDD enforcement, dev workflow, and code review — zero config, language-agnostic.",
+  "author": {
+    "name": "VictorNain26",
+    "url": "https://github.com/VictorNain26"
+  },
+  "homepage": "https://github.com/VictorNain26/dev-standards",
+  "repository": "https://github.com/VictorNain26/dev-standards",
+  "license": "MIT",
+  "keywords": ["tdd", "security", "git-safety", "code-review", "enforcement", "dev-workflow"],
+  "commands": "./commands/",
+  "hooks": "./hooks/hooks.json"
+}
