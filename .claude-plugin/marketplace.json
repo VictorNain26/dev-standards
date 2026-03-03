@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "dev-standards",
-      "source": ".",
+      "source": "./plugins/dev-standards",
       "description": "Universal development standards — git safety, secret protection, TDD enforcement, dev workflow, code review. Zero config, language-agnostic.",
       "version": "1.1.0",
       "author": {
