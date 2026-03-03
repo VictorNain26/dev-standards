@@ -1,7 +1,7 @@
 {
   "name": "dev-standards",
-  "version": "1.3.0",
-  "description": "Enforcement hooks for git safety, secret protection, and automatic TDD workflow. Blocks dangerous git commands, prevents .env modifications, injects Red-Green-Refactor on implementation tasks, and gates completion on test coverage.",
+  "version": "2.0.0",
+  "description": "Enforcement hooks for git safety, secret protection, and TDD compliance gate. Blocks dangerous git commands, prevents .env modifications, and gates task completion on test coverage.",
   "author": {
     "name": "VictorNain26",
     "url": "https://github.com/VictorNain26"

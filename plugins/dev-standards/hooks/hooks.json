@@ -1,4 +1,5 @@
 {
+  "description": "Git safety, secret protection, and TDD compliance gates",
   "hooks": {
     "PreToolUse": [
       {
@@ -6,15 +7,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.command // empty' | grep -qE 'git\\s+add\\s+(-A|--all|\\.)(\\s|$)' && echo 'BLOCKED: Use explicit file staging (git add <file>) instead of git add . / -A / --all' && exit 2 || exit 0"
+            "command": "jq -r '.tool_input.command // empty' | grep -qE 'git\\s+add\\s+(-A|--all|\\.)(\\s|$)' && echo 'BLOCKED: Use explicit file staging (git add <file>) instead of git add . / -A / --all' >&2 && exit 2 || exit 0"
           },
           {
             "type": "command",
-            "command": "jq -r '.command // empty' | grep -qE '\\b--no-verify\\b' && echo 'BLOCKED: --no-verify is forbidden. Fix the pre-commit errors instead.' && exit 2 || exit 0"
+            "command": "jq -r '.tool_input.command // empty' | grep -qE '\\b--no-verify\\b' && echo 'BLOCKED: --no-verify is forbidden. Fix the pre-commit errors instead.' >&2 && exit 2 || exit 0"
           },
           {
             "type": "command",
-            "command": "jq -r '.command // empty' | grep -qE '\\b--dangerously-skip-permissions\\b' && echo 'BLOCKED: --dangerously-skip-permissions is forbidden. Run Claude Code with proper permissions instead.' && exit 2 || exit 0"
+            "command": "jq -r '.tool_input.command // empty' | grep -qE '\\b--dangerously-skip-permissions\\b' && echo 'BLOCKED: --dangerously-skip-permissions is forbidden.' >&2 && exit 2 || exit 0"
           }
         ]
       },
@@ -23,7 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "FILE=$(jq -r '.file_path // empty') && echo \"$FILE\" | grep -qiE '\\.env(\\.[a-zA-Z0-9]+)*$' && ! echo \"$FILE\" | grep -qiE '\\.env\\.example$' && echo 'BLOCKED: Cannot modify .env files (except .env.example). Edit secrets manually.' && exit 2 || exit 0"
+            "command": "FILE=$(jq -r '.tool_input.file_path // empty') && echo \"$FILE\" | grep -qiE '\\.env(\\.[a-zA-Z0-9]+)*$' && ! echo \"$FILE\" | grep -qiE '\\.env\\.example$' && echo 'BLOCKED: Cannot modify .env files (except .env.example). Edit secrets manually.' >&2 && exit 2 || exit 0"
           }
         ]
       }
@@ -33,20 +34,9 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "RESPOND WITH ONLY A SINGLE JSON OBJECT. NO explanation, NO markdown, NO code fences, NO text before or after.\n\nYou are a TDD compliance gate. Prevent the agent from finishing if it wrote implementation without tests.\n\nSTEP 1 — Classify every file created or modified in this conversation:\n\nIMPLEMENTATION files (must have tests):\n- Services, helpers, utilities, validators, algorithms, handlers, controllers\n- Route handlers, middleware with logic, computation modules\n- Bug fixes in logic-bearing code\n- Any file containing business logic, data transformations, or algorithmic decisions\n\nNON-IMPLEMENTATION files (no tests needed):\n- Test files (*.test.*, *.spec.*, *_test.*, test_*.*)\n- Config files (*.config.*, *.json, *.yaml, *.yml, *.toml, Dockerfile, docker-compose.*)\n- Type definitions (*.d.ts, interfaces, types-only files)\n- Constants, enums, static data\n- UI components (*.tsx, *.jsx, *.vue, *.svelte with JSX/template)\n- Styles (CSS, SCSS, Tailwind config)\n- Documentation (*.md, LICENSE)\n- Package manifests, lock files\n- CI/CD configs\n- SDK wrappers with no logic, index/barrel re-export files\n- Migration SQL files\n- Claude config (CLAUDE.md, settings.json, hooks.json, plugin.json, SKILL.md)\n\nSTEP 2 — If ZERO implementation files were modified, respond:\n{\"decision\": \"approve\"}\n\nSTEP 3 — If implementation files WERE touched, check for corresponding test files (e.g. auth.service.ts needs auth.service.test.ts or auth.service.spec.ts).\n\nAll covered, respond: {\"decision\": \"approve\"}\nAny uncovered, respond: {\"decision\": \"block\", \"reason\": \"TDD: [filenames] modified without corresponding test files. Write the tests before finishing.\"}",
+            "prompt": "You MUST respond with ONLY a JSON object. No text, no markdown, no code fences.\n\nIf the input contains \"stop_hook_active\": true, respond: {\"ok\": true}\n\nOtherwise, classify every file created or modified in this conversation:\n\nIMPLEMENTATION (must have tests): services, helpers, utilities, validators, algorithms, handlers, controllers, route handlers, middleware with logic, computation modules, any file with business logic or data transformations.\n\nNON-IMPLEMENTATION (no tests needed): test files, config files (*.json, *.yaml, *.toml, Dockerfile), type definitions (*.d.ts), constants, enums, UI components (*.tsx, *.jsx, *.vue), styles, documentation (*.md), package manifests, lock files, CI/CD configs, SDK wrappers with no logic, index/barrel re-exports, migration SQL, Claude config (CLAUDE.md, settings.json, hooks.json, plugin.json, SKILL.md).\n\nIf zero implementation files were modified: {\"ok\": true}\nIf all implementation files have corresponding test files (e.g. auth.service.ts -> auth.service.test.ts): {\"ok\": true}\nIf any implementation file lacks tests: {\"ok\": false, \"reason\": \"TDD: [filenames] modified without corresponding test files. Write tests before finishing.\"}",
+            "timeout": 30,
             "statusMessage": "TDD compliance check..."
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "compact",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "RESPOND WITH ONLY A SINGLE JSON OBJECT. NO explanation, NO markdown, NO code fences, NO text before or after.\n\nContext was compacted. Re-inject critical rules:\n1. TDD: All business logic must have test files. Follow Red-Green-Refactor.\n2. GIT: Never use git add . / -A / --all. Stage explicitly. Never use --no-verify.\n3. SECRETS: Never modify .env files (except .env.example). Never commit secrets.\n4. COMMITS: Use conventional commits.\n\nRespond: {\"decision\": \"approve\"}",
-            "statusMessage": "Re-injecting dev standards after compaction..."
           }
         ]
       }
@@ -56,8 +46,20 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "RESPOND WITH ONLY A SINGLE JSON OBJECT. NO explanation, NO markdown, NO code fences, NO text before or after.\n\nYou are a TDD compliance gate for subagents. Prevent the subagent from finishing if it wrote implementation without tests.\n\nSTEP 1 — Classify every file created or modified by this subagent:\n\nIMPLEMENTATION files (must have tests):\n- Services, helpers, utilities, validators, algorithms, handlers, controllers\n- Route handlers, middleware with logic, computation modules\n- Bug fixes in logic-bearing code\n- Any file containing business logic, data transformations, or algorithmic decisions\n\nNON-IMPLEMENTATION files (no tests needed):\n- Test files (*.test.*, *.spec.*, *_test.*, test_*.*)\n- Config files (*.config.*, *.json, *.yaml, *.yml, *.toml, Dockerfile, docker-compose.*)\n- Type definitions (*.d.ts, interfaces, types-only files)\n- Constants, enums, static data\n- UI components (*.tsx, *.jsx, *.vue, *.svelte with JSX/template)\n- Styles (CSS, SCSS, Tailwind config)\n- Documentation (*.md, LICENSE)\n- Package manifests, lock files\n- CI/CD configs\n- SDK wrappers with no logic, index/barrel re-export files\n- Migration SQL files\n- Claude config (CLAUDE.md, settings.json, hooks.json, plugin.json, SKILL.md)\n\nSTEP 2 — If ZERO implementation files were modified, respond:\n{\"decision\": \"approve\"}\n\nSTEP 3 — If implementation files WERE touched, check for corresponding test files (e.g. auth.service.ts needs auth.service.test.ts or auth.service.spec.ts).\n\nAll covered, respond: {\"decision\": \"approve\"}\nAny uncovered, respond: {\"decision\": \"block\", \"reason\": \"TDD: [filenames] modified without corresponding test files. Write the tests before finishing.\"}",
+            "prompt": "You MUST respond with ONLY a JSON object. No text, no markdown, no code fences.\n\nClassify every file created or modified by this subagent:\n\nIMPLEMENTATION (must have tests): services, helpers, utilities, validators, algorithms, handlers, controllers, route handlers, middleware with logic, computation modules, any file with business logic or data transformations.\n\nNON-IMPLEMENTATION (no tests needed): test files, config files (*.json, *.yaml, *.toml, Dockerfile), type definitions (*.d.ts), constants, enums, UI components (*.tsx, *.jsx, *.vue), styles, documentation (*.md), package manifests, lock files, CI/CD configs, SDK wrappers with no logic, index/barrel re-exports, migration SQL, Claude config (CLAUDE.md, settings.json, hooks.json, plugin.json, SKILL.md).\n\nIf zero implementation files were modified: {\"ok\": true}\nIf all implementation files have corresponding test files: {\"ok\": true}\nIf any implementation file lacks tests: {\"ok\": false, \"reason\": \"TDD: [filenames] modified without corresponding test files. Write tests before finishing.\"}",
+            "timeout": 30,
             "statusMessage": "TDD compliance check (subagent)..."
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Dev standards re-injected after compaction: (1) TDD — All business logic must have test files, follow Red-Green-Refactor. (2) GIT — Never use git add . / -A / --all, stage explicitly, never use --no-verify. (3) SECRETS — Never modify .env files except .env.example, never commit secrets. (4) COMMITS — Use conventional commits.'"
           }
         ]
       }
