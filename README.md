@@ -2,8 +2,6 @@
 
 Claude Code plugin that enforces universal development standards. Git safety, secret protection, TDD enforcement, dev workflow, and code review — zero config, language-agnostic.
 
-> Successor to [tdd-enforcer](https://github.com/VictorNain26/tdd-enforcer). Covers everything tdd-enforcer did, plus git safety, secret protection, and structured workflows.
-
 ## Install
 
 ```bash
