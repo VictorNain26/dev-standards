@@ -23,7 +23,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "FILE=$(jq -r '.file_path // empty') && echo \"$FILE\" | grep -qE '\\.env(\\.[a-z]+)*$' && ! echo \"$FILE\" | grep -qE '\\.env\\.example$' && echo 'BLOCKED: Cannot modify .env files (except .env.example). Edit secrets manually.' && exit 2 || exit 0"
+            "command": "FILE=$(jq -r '.file_path // empty') && echo \"$FILE\" | grep -qiE '\\.env(\\.[a-zA-Z0-9]+)*$' && ! echo \"$FILE\" | grep -qiE '\\.env\\.example$' && echo 'BLOCKED: Cannot modify .env files (except .env.example). Edit secrets manually.' && exit 2 || exit 0"
           }
         ]
       }
