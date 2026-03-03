@@ -1,6 +1,6 @@
 # dev-standards
 
-Claude Code plugin that enforces universal development standards. Git safety, secret protection, TDD enforcement, dev workflow, and code review — zero config, language-agnostic.
+Claude Code plugin — enforcement hooks for git safety, secret protection, and TDD compliance. Zero config, language-agnostic.
 
 ## Install
 
@@ -10,11 +10,6 @@ Claude Code plugin that enforces universal development standards. Git safety, se
 
 # 2. Install the plugin
 /plugin install dev-standards@victornain26-plugins
-```
-
-For local development:
-```bash
-claude --plugin-dir /path/to/dev-standards
 ```
 
 ## What's included
@@ -29,31 +24,21 @@ claude --plugin-dir /path/to/dev-standards
 | Secret protection | PreToolUse (Edit\|Write) | Modifying `.env.*` files (except `.env.example`) |
 | TDD gate | Stop (prompt) | Finishing without tests for implementation files |
 | TDD gate (subagent) | SubagentStop (prompt) | Same check applied to subagents |
+| Compaction re-inject | SessionStart (compact) | Re-injects critical rules after context compaction |
 
-### Skills (user-invocable)
+### Skills
 
-| Skill | Description |
-|-------|-------------|
-| `/dev` | Full dev workflow: scope, detect conventions, TDD if logic, implement, validate, commit |
-| `/tdd` | Strict TDD workflow: Red-Green-Refactor with auto-detection |
-| `/review` | Code review checklist: type safety, security, error handling, TDD compliance |
+| Skill | Invocable | Description |
+|-------|-----------|-------------|
+| `/tdd` | Yes | Strict TDD workflow: Red-Green-Refactor with auto-detection |
+| `tdd-reference` | Auto | TDD rules loaded when working on business logic |
+| `security-reference` | Auto | Security rules loaded when working with git or secrets |
 
-### Skills (auto-loaded, not user-invocable)
-
-| Skill | Loaded when |
-|-------|-------------|
-| `tdd-reference` | Working on business logic code |
-| `security-reference` | Working with git, env files, or sensitive data |
+> `/dev` and `/review` workflows are intentionally not included — use `feature-dev` and `code-review` plugins for those (more mature, multi-agent).
 
 ## How it works
 
 ```
-User asks to implement something
-        |
-        v
-/dev or /tdd skill (optional — sets workflow)
-        |
-        v
 Agent writes code
         |
         v
@@ -87,31 +72,7 @@ The TDD gate supports any language with standard test file patterns:
 | Rust | `*_test.rs`, `tests/*.rs` |
 | Ruby | `*_test.rb`, `*_spec.rb` |
 
-## Project-specific overrides
-
-Plugin skills (`/dev`, `/tdd`, `/review`) can be overridden by placing same-named files in your project's `.claude/commands/` or `.claude/skills/` directory. Project definitions take precedence over plugin ones.
-
-Plugin hooks always apply — they cannot be overridden per-project.
-
-### Recommended project setup
-
-After installing this plugin, your project only needs:
-
-```
-.claude/
-  commands/
-    dev.md          # (optional) project-specific dev workflow overlay
-    review.md       # (optional) project-specific review overlay
-  rules/
-    tdd.md          # project-specific test conventions (runners, paths)
-    ...             # other project-specific rules
-```
-
-You can safely remove from `.claude/settings.json` any hooks that this plugin now handles (git safety, secret protection).
-
 ## Compatibility
 
-- Any language: TypeScript, JavaScript, Python, Go, Rust, Java, Ruby
-- Any test runner: Jest, Vitest, Bun, pytest, Go test, Cargo test, JUnit, RSpec
-- Any project structure: monorepo, single app, library
+- Any language, any test runner, any project structure
 - Claude Code v1.0.33+

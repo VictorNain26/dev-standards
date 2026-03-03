@@ -11,8 +11,8 @@
     {
       "name": "dev-standards",
       "source": "./plugins/dev-standards",
-      "description": "Universal development standards — git safety, secret protection, TDD enforcement, dev workflow, code review. Zero config, language-agnostic.",
-      "version": "1.1.0",
+      "description": "Enforcement hooks for git safety, secret protection, and TDD compliance. Blocks dangerous git commands, prevents .env modifications, and gates task completion on test coverage.",
+      "version": "1.2.0",
       "author": {
         "name": "VictorNain26"
       },
